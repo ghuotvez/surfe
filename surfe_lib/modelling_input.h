@@ -37,9 +37,12 @@
 #include <surfe_lib_module.h>
 #include <modelling_parameters.h>
 
+#include <cstdio>
+#include <iostream>
 #include <vector>
+#include <string>
 
-class SURFE_LIB_EXPORT Point{
+class SURFE_LIB_EXPORT Point {
 private:
 	double _x;
 	double _y;
@@ -48,13 +51,13 @@ private:
 	double _scalar_field;
 	double _field_normal[3];
 public:
-	Point(const double& x_coord,const double& y_coord, const double &z_coord, const double &c_coord = 0)
+	Point(const double &x_coord, const double &y_coord, const double &z_coord, const double &c_coord = 0)
 		: _x(x_coord), _y(y_coord), _z(z_coord), _c(c_coord)
 	{
 		_scalar_field = NULL;
-		for (int j = 0; j < 3; j++ ) _field_normal[j] = NULL;
+		for (int j = 0; j < 3; j++) _field_normal[j] = NULL;
 	}
-	Point(){}
+	Point() {}
 	double x() const { return _x; }
 	double y() const { return _y; }
 	double z() const { return _z; }
@@ -71,16 +74,16 @@ public:
 	double nz_interp() const { return _field_normal[2]; }
 };
 
-class SURFE_LIB_EXPORT Evaluation_Point : public Point{
+class SURFE_LIB_EXPORT Evaluation_Point : public Point {
 public:
 	Evaluation_Point(const double &x_coord,
 		const double &y_coord,
 		const double &z_coord,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord)
-	{ 
-	} 
-	Evaluation_Point(){}
+		: Point(x_coord, y_coord, z_coord, c_coord)
+	{
+	}
+	Evaluation_Point() {}
 };
 
 class SURFE_LIB_EXPORT Interface : public Point {
@@ -94,13 +97,13 @@ public:
 		const double &z_coord,
 		const double &lvl,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord), _level(lvl) 
-	{ 
+		: Point(x_coord, y_coord, z_coord, c_coord), _level(lvl)
+	{
 		_residual = 0.0;
 		_level_bound[0] = 0.0;
 		_level_bound[1] = 0.0;
-	} 
-	Interface(){}
+	}
+	Interface() {}
 	double level() const { return _level; }
 	double residual() const { return _residual; }
 	double level_lower_bound() const { return _level_bound[0]; }
@@ -120,8 +123,10 @@ public:
 		const double &z_coord,
 		const double &lvl,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord), _inequality_level(lvl) { _residual = true; } 
-	Inequality(){}
+		: Point(x_coord, y_coord, z_coord, c_coord), _inequality_level(lvl) {
+		_residual = true;
+	}
+	Inequality() {}
 	double level() const { return _inequality_level; }
 	bool residual() const { return _residual; }
 	void setResidual(const bool &res) { _residual = res; }
@@ -138,14 +143,14 @@ private:
 	bool _compute_strike_dip_polarity_from_normal();
 	bool _compute_normal_from_strike_dip_polarity();
 public:
-	Planar (const double &x_coord,
+	Planar(const double &x_coord,
 		const double &y_coord,
 		const double &z_coord,
 		const double &nx,
 		const double &ny,
 		const double &nz,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord)
+		: Point(x_coord, y_coord, z_coord, c_coord)
 	{
 		_normal[0] = nx;
 		_normal[1] = ny;
@@ -154,23 +159,23 @@ public:
 		// compute strike, dip, and polarity
 		_compute_strike_dip_polarity_from_normal();
 	}
-	Planar (const double &x_coord,
+	Planar(const double &x_coord,
 		const double &y_coord,
 		const double &z_coord,
 		const double &dip,
 		const double &strike,
 		const int &polarity,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord), _dip(dip), _strike(strike), _polarity(polarity)
+		: Point(x_coord, y_coord, z_coord, c_coord), _dip(dip), _strike(strike), _polarity(polarity)
 	{
 		// compute normal
 		_compute_normal_from_strike_dip_polarity();
 		// residual default
 		_residual = 0.0;
 	}
-	Planar(){}
-	bool getDipVector(double (&vector)[3]);
-	bool getStrikeVector(double (&vector)[3]);
+	Planar() {}
+	bool getDipVector(double(&vector)[3]);
+	bool getStrikeVector(double(&vector)[3]);
 	double dip() const { return _dip; }
 	double strike() const { return _strike; }
 	int polarity() const { return _polarity; }
@@ -187,7 +192,7 @@ public:
 	double residual() const { return _residual; }
 	void setResidual(const double &res) { _residual = res; }
 	void setNormal(const double &nx, const double &ny, const double &nz) { _normal[0] = nx; _normal[1] = ny; _normal[2] = nz; }
-}; 
+};
 
 class SURFE_LIB_EXPORT Tangent : public Point {
 private:
@@ -196,14 +201,14 @@ private:
 	double _angle_bound[2];
 	double _inner_product_constraint;
 public:
-	Tangent (const double &x_coord,
+	Tangent(const double &x_coord,
 		const double &y_coord,
 		const double &z_coord,
 		const double &tx,
 		const double &ty,
 		const double &tz,
 		const double &c_coord = NULL)
-		: Point(x_coord,y_coord,z_coord,c_coord)
+		: Point(x_coord, y_coord, z_coord, c_coord)
 	{
 		_tangent[0] = tx;
 		_tangent[1] = ty;
@@ -211,7 +216,7 @@ public:
 		_residual = 0.0;
 		_inner_product_constraint = 0.0; // default value 0.0 means that the angle b/t the gradient of the scalar field and tangent vector is 90 degrees.
 	}
-	Tangent(){}
+	Tangent() {}
 	double tx() const { return _tangent[0]; }
 	double ty() const { return _tangent[1]; }
 	double tz() const { return _tangent[2]; }
@@ -229,41 +234,89 @@ public:
 		if (a < 0)
 		{
 			_angle_bound[0] = a;
-			_angle_bound[1] = 0; 
+			_angle_bound[1] = 0;
 		}
 		else
 		{
 			_angle_bound[0] = 0;
-			_angle_bound[1] = a; 
-		} 
+			_angle_bound[1] = a;
+		}
 	}
 	void setInnerProductConstraint(const double &ip_constraint) { _inner_product_constraint = ip_constraint; }
-}; 
+};
+////Test with a light structure instead of a heavy class.
+//struct SURFE_LIB_EXPORT InequalityPointsLight {
+//	double _ie_points[4];
+//	//double xCoord;
+//	//double yCoord;
+//	//double zCoord;
+//	//double lvl;
+//};
+//struct SURFE_LIB_EXPORT InterfacePointsLight {
+//	double _it_points[4];
+//	//double xCoord;
+//	//double yCoord;
+//	//double zCoord;
+//	//double lvl;
+//};
+//struct SURFE_LIB_EXPORT PlanarPointsLight {
+//	double _pl_points[6];
+//	//double xCoord;
+//	//double yCoord;
+//	//double zCoord;
+//	//double dip;
+//	//double strike;
+//	//int polarity;
+//
+//};
+//struct SURFE_LIB_EXPORT TangentPointsLight {
+//	double _tg_points[6];
+//	//double xCoord;
+//	//double yCoord;
+//	//double zCoord;
+//	//double tx;
+//	//double ty;
+//	//double tz;
+//};
+//struct SURFE_LIB_EXPORT EvaluationPointsLight {
+//	double _ev_points[3];
+//	//double xCoord;
+//	//double yCoord;
+//	//double zCoord;
+//};
+struct SURFE_LIB_EXPORT InequalityPoints {
+	int n_pts;
+	//InequalityPointsLight inequality[];
+	double inequality[][4];
+};
+struct SURFE_LIB_EXPORT InterfacePoints {
+	
+	int n_pts;
+	//InterfacePointsLight interface[];
+	double interface[][4];
+};
+struct SURFE_LIB_EXPORT PlanarPoints {
+	
+	int n_pts;
+	//PlanarPointsLight planar[];
+	double planar[][6];
+};
+struct SURFE_LIB_EXPORT TangentPoints {
+	
+	int n_pts;
+	//TangentPointsLight tangent[];
+	double tangent[][6];
+};
+struct SURFE_LIB_EXPORT EvaluationPoints {
+	
+	int n_pts;
+	//EvaluationPointsLight evaluation[];
+	double evaluation[][3];
+};
 
-struct SURFE_LIB_EXPORT InequalityPoints{
-	Inequality *inequality;
-	int n_pts;
-};
-struct SURFE_LIB_EXPORT InterfacePoints{
-	Interface *intface;
-	int n_pts;
-};
-struct SURFE_LIB_EXPORT PlanarPoints{
-	Planar *planar; 
-	int n_pts;
-};
-struct SURFE_LIB_EXPORT TangentPoints{
-	Tangent *tangent;
-	int n_pts;
-};
-struct SURFE_LIB_EXPORT EvaluationPoints{
-	Evaluation_Point *evaluation;
-	int n_pts;
-};
 
 
-
-class SURFE_LIB_EXPORT Basic_input{
+class SURFE_LIB_EXPORT Basic_input {
 private:
 	// Attributes
 	double _avg_nn_dist_ie;
@@ -273,8 +326,8 @@ private:
 	// interface
 	void _get_distinct_interface_iso_values();
 	void _get_interface_points();
-	bool _interface_points_are_coplanar(){ return true; } // Not implemented yet. should be tested when 2nd order polynomials are used. Also when unisolvent points are used this should be called.
-	// inequality
+	bool _interface_points_are_coplanar() { return true; } // Not implemented yet. should be tested when 2nd order polynomials are used. Also when unisolvent points are used this should be called.
+														   // inequality
 	std::vector<double> _get_distinct_inequality_iso_values();
 public:
 	Basic_input()
@@ -290,30 +343,89 @@ public:
 		interface_point_lists = new std::vector< std::vector < Interface > >;
 		interface_test_points = new std::vector< Interface >;
 
-		_avg_nn_dist_ie  = -99999.0; // no data value
+		_avg_nn_dist_ie = -99999.0; // no data value
 		_avg_nn_dist_itr = -99999.0; // no data value
-		_avg_nn_dist_p   = -99999.0; // no data value
-		_avg_nn_dist_t   = -99999.0; // no data value
+		_avg_nn_dist_p = -99999.0; // no data value
+		_avg_nn_dist_t = -99999.0; // no data value
 	}
-	Basic_input(const InequalityPoints &ie_pts,
-				const InterfacePoints &i_pts,
-				const PlanarPoints &p_pts,
-				const TangentPoints &t_pts,
-				const EvaluationPoints &e_pts)
+	void Basic_input_function(InequalityPoints ie_pts,
+		InterfacePoints i_pts,
+		PlanarPoints p_pts,
+		TangentPoints t_pts,
+		EvaluationPoints e_pts)
 	{
 		inequality = new std::vector<Inequality>;
 		itrface = new std::vector<Interface>;
 		planar = new std::vector<Planar>;
 		tangent = new std::vector<Tangent>;
-
 		evaluation_pts = new std::vector<Evaluation_Point>;
 
-		for (int j = 0; j < ie_pts.n_pts; j++) inequality->push_back(ie_pts.inequality[j]);
-		for (int j = 0; j < i_pts.n_pts;  j++) itrface->push_back(i_pts.intface[j]);
-		for (int j = 0; j < p_pts.n_pts;  j++) planar->push_back(p_pts.planar[j]);
-		for (int j = 0; j < t_pts.n_pts;  j++) tangent->push_back(t_pts.tangent[j]);
-		 
-		for (int j = 0; j < e_pts.n_pts; j++) evaluation_pts->push_back(e_pts.evaluation[j]);
+		//Remap incoming structure to related class.
+		if (ie_pts.n_pts > 0)
+		{
+			for (int i = 0; i < ie_pts.n_pts; i++)
+			{
+				Inequality currentIne = Inequality::Inequality(ie_pts.inequality[i][0], ie_pts.inequality[i][1], ie_pts.inequality[i][2], ie_pts.inequality[i][3]);
+
+				inequality->push_back(currentIne);
+				
+			}
+			
+			
+		}
+
+		if (i_pts.n_pts > 0)
+		{
+			for (int i = 0; i < i_pts.n_pts; i++)
+			{
+				Interface currentInter = Interface::Interface(i_pts.interface[i][0], i_pts.interface[i][1], i_pts.interface[i][2], i_pts.interface[i][3]);
+
+				itrface->push_back(currentInter);
+			}
+		}
+
+		if (p_pts.n_pts > 0)
+		{
+			for (int i = 0; i < p_pts.n_pts; i++)
+			{
+				Planar currentPlan = Planar::Planar(p_pts.planar[i][0], p_pts.planar[i][1], p_pts.planar[i][2], p_pts.planar[i][3], p_pts.planar[i][4], (int)p_pts.planar[i][5]);
+
+				planar->push_back(currentPlan);
+			}
+		}
+
+		if (t_pts.n_pts > 0)
+		{
+			for (int i = 0; i < t_pts.n_pts; i++)
+			{
+				Tangent currentTan = Tangent::Tangent(t_pts.tangent[i][0], t_pts.tangent[i][1], t_pts.tangent[i][2], t_pts.tangent[i][3], t_pts.tangent[i][4], t_pts.tangent[i][5]);
+
+				tangent->push_back(currentTan);
+			}
+		}
+
+		if (e_pts.n_pts > 0)
+		{
+			for (int i = 0; i < e_pts.n_pts; i++)
+			{
+				Evaluation_Point currentEva = Evaluation_Point::Evaluation_Point(e_pts.evaluation[i][0], e_pts.evaluation[i][1], e_pts.evaluation[i][2]);
+
+				evaluation_pts->push_back(currentEva);
+			}
+		}
+
+		using namespace std;
+		freopen("W:\\transit\\Gab\\output.txt", "w", stdout);
+		freopen("W:\\transit\\Gab\\error.txt", "w", stderr);
+
+		cout << "Output message" << endl;
+		cerr << "Error message" << endl;
+
+		//for (int j = 0; j < ie_pts.n_pts; j++) inequality->push_back(ie_pts.inequality[j]);
+		//for (int j = 0; j < i_pts.n_pts; j++) itrface->push_back(i_pts.interface[j]);
+		//for (int j = 0; j < p_pts.n_pts; j++) planar->push_back(p_pts.planar[j]);
+		//for (int j = 0; j < t_pts.n_pts; j++) tangent->push_back(t_pts.tangent[j]);
+		//for (int j = 0; j < e_pts.n_pts; j++) evaluation_pts->push_back(e_pts.evaluation[j]);
 
 		interface_iso_values = new std::vector<double>;
 		interface_point_lists = new std::vector< std::vector < Interface > >;
@@ -324,6 +436,7 @@ public:
 		_avg_nn_dist_p = -99999.0; // no data value
 		_avg_nn_dist_t = -99999.0; // no data value
 	}
+
 	~Basic_input()
 	{
 		delete inequality;
@@ -350,12 +463,12 @@ public:
 	std::vector < Interface > *interface_test_points;
 	bool get_interface_data(); // fills interface_iso_values, interface_point_lists, interface_test_points data structures
 
-	// validation
+							   // validation
 	bool check_input_data();
 
 	bool get_local_anisotropy() { return true; } // TO IMPLEMENT using planar data extract local tensors for every planar point. 
 
-	// spatial analysis
+												 // spatial analysis
 	double compute_inequality_avg_nn_distance();
 	double compute_interface_avg_nn_distance();
 	double compute_planar_avg_nn_distance();
@@ -377,9 +490,9 @@ std::vector<int> get_n_nearest_neighbours_to_point(const int &n, const Point &p,
 int furtherest_neighbour_index(const Point &p, const std::vector < Point > &pts);
 int furtherest_neighbour_index(const std::vector < Point > &pts1, const std::vector < Point > &pts2);
 double avg_nn_distance(const std::vector < Point > &pts);
-bool Find_STL_Vector_Indices_FurtherestTwoPoints(const std::vector< Point> &pts, int (&TwoIndexes)[2]);
+bool Find_STL_Vector_Indices_FurtherestTwoPoints(const std::vector< Point> &pts, int(&TwoIndexes)[2]);
 int Find_STL_Vector_Index_ofPointClosestToOtherPointWithinDistance(const Point &p, const std::vector< Point > &pts, const double &dist);
-void calculate_bounds(const std::vector< Point > &pts, double (&bounds)[6]);
+void calculate_bounds(const std::vector< Point > &pts, double(&bounds)[6]);
 std::vector<int> get_extremal_point_data_indices_from_points(const std::vector< Point > &pts);
 bool is_index_in_list(const int &index, const std::vector < int > &list);
 bool find_fill_distance(const Basic_input &input, double &fill_distance);
@@ -388,9 +501,9 @@ bool find_fill_distance(const Basic_input &input, double &fill_distance);
 //                 - Considers the magnitude of the residuals
 //                 - Considers the distance to other large residual points
 //                 - Considers the variability with close large residual points
-std::vector<int> Get_Inequality_STL_Vector_Indices_With_Large_Residuals(const std::vector<Inequality> *inequality, const double &avg_nn_distance );
-std::vector<int> Get_Interface_STL_Vector_Indices_With_Large_Residuals(const std::vector<Interface> *itrface, const double &itrface_uncertainty, const double &avg_nn_distance );
-std::vector<int> Get_Planar_STL_Vector_Indices_With_Large_Residuals(const std::vector<Planar> *planar, const double &angular_uncertainty, const double &avg_nn_distance );
-std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals(const std::vector<Tangent> *tangent, const double &angular_uncertainty, const double &avg_nn_distance );
+std::vector<int> Get_Inequality_STL_Vector_Indices_With_Large_Residuals(const std::vector<Inequality> *inequality, const double &avg_nn_distance);
+std::vector<int> Get_Interface_STL_Vector_Indices_With_Large_Residuals(const std::vector<Interface> *itrface, const double &itrface_uncertainty, const double &avg_nn_distance);
+std::vector<int> Get_Planar_STL_Vector_Indices_With_Large_Residuals(const std::vector<Planar> *planar, const double &angular_uncertainty, const double &avg_nn_distance);
+std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals(const std::vector<Tangent> *tangent, const double &angular_uncertainty, const double &avg_nn_distance);
 
 #endif
