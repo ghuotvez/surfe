@@ -1,77 +1,41 @@
-﻿// SURFace Estimator(SURFE) - Terms and Conditions of Use
-
-// Unless otherwise noted, computer program source code of the SURFace Estimator(SURFE)
-// is covered under Crown Copyright, Government of Canada, and is distributed under the MIT License.
-
-// The Canada wordmark and related graphics associated with this distribution are protected under 
-// trademark law and copyright law.No permission is granted to use them outside the parameters of 
-// the Government of Canada's corporate identity program. For more information, see
-// http://www.tbs-sct.gc.ca/fip-pcim/index-eng.asp
-
-// Copyright title to all 3rd party software distributed with the SURFace Estimator(SURFE) is held 
-// by the respective copyright holders as noted in those files.Users are asked to read the 3rd Party
-// Licenses referenced with those assets.
-
-// MIT License
-
-// Copyright(c) 2017 Government of Canada
-
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-// and associated documentation files(the "Software"), to deal in the Software without restriction,
-// including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-// sublicense, and / or sell copies of the Software, and to permit persons to whom the Software is 
-// furnished to do so, subject to the following conditions :
-
-// The above copyright notice and this permission notice shall be included in all copies or
-// substantial portions of the Software.
-
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-#ifndef _modelling_input_h
+﻿#ifndef _modelling_input_h
 #define _modelling_input_h
 
 #include <surfe_lib_module.h>
 #include <modelling_parameters.h>
 
-#include <cstdio>
-#include <iostream>
 #include <vector>
-#include <string>
 
-class SURFE_LIB_EXPORT Point {
-private:
-	double _x;
-	double _y;
-	double _z;
-	double _c;
-	double _scalar_field;
-	double _field_normal[3];
-public:
-	Point(const double &x_coord, const double &y_coord, const double &z_coord, const double &c_coord = 0)
-		: _x(x_coord), _y(y_coord), _z(z_coord), _c(c_coord)
-	{
-		_scalar_field = NULL;
-		for (int j = 0; j < 3; j++) _field_normal[j] = NULL;
-	}
-	Point() {}
-	double x() const { return _x; }
-	double y() const { return _y; }
-	double z() const { return _z; }
-	double c() const { return _c; }
-	void set_x(const double &x_coord) { _x = x_coord; }
-	void set_y(const double &y_coord) { _y = y_coord; }
-	void set_z(const double &z_coord) { _z = z_coord; }
-	void set_c(const double &c_coord) { _c = c_coord; }
-	double scalar_field() const { return _scalar_field; }
-	void set_scalar_field(const double &scalar_field_value) { _scalar_field = scalar_field_value; }
-	void set_vector_field(const double &nx, const double &ny, const double &nz) { _field_normal[0] = nx; _field_normal[1] = ny; _field_normal[2] = nz; }
-	double nx_interp() const { return _field_normal[0]; }
-	double ny_interp() const { return _field_normal[1]; }
-	double nz_interp() const { return _field_normal[2]; }
+class SURFE_LIB_EXPORT Point{
+	private:
+		double _x;
+		double _y;
+		double _z;
+		double _c;
+		double _scalar_field;
+		double _field_normal[3];
+	public:
+		Point(const double& x_coord, const double& y_coord, const double &z_coord, const double &c_coord = 0)
+			: _x(x_coord), _y(y_coord), _z(z_coord), _c(c_coord)
+		{
+			_scalar_field = NULL;
+			for (int j = 0; j < 3; j++) _field_normal[j] = NULL;
+		}
+		Point() {}
+		double x() const { return _x; }
+		double y() const { return _y; }
+		double z() const { return _z; }
+		double c() const { return _c; }
+		void set_x(const double &x_coord) { _x = x_coord; }
+		void set_y(const double &y_coord) { _y = y_coord; }
+		void set_z(const double &z_coord) { _z = z_coord; }
+		void set_c(const double &c_coord) { _c = c_coord; }
+		double scalar_field() const { return _scalar_field; }
+		void set_scalar_field(const double &scalar_field_value) { _scalar_field = scalar_field_value; }
+		void set_vector_field(const double &nx, const double &ny, const double &nz) { _field_normal[0] = nx; _field_normal[1] = ny; _field_normal[2] = nz; }
+		double nx_interp() const { return _field_normal[0]; }
+		double ny_interp() const { return _field_normal[1]; }
+		double nz_interp() const { return _field_normal[2]; }
 };
 
 class SURFE_LIB_EXPORT Evaluation_Point : public Point {
@@ -244,74 +208,49 @@ public:
 	}
 	void setInnerProductConstraint(const double &ip_constraint) { _inner_product_constraint = ip_constraint; }
 };
-////Test with a light structure instead of a heavy class.
-//struct SURFE_LIB_EXPORT InequalityPointsLight {
-//	double _ie_points[4];
-//	//double xCoord;
-//	//double yCoord;
-//	//double zCoord;
-//	//double lvl;
-//};
-//struct SURFE_LIB_EXPORT InterfacePointsLight {
-//	double _it_points[4];
-//	//double xCoord;
-//	//double yCoord;
-//	//double zCoord;
-//	//double lvl;
-//};
-//struct SURFE_LIB_EXPORT PlanarPointsLight {
-//	double _pl_points[6];
-//	//double xCoord;
-//	//double yCoord;
-//	//double zCoord;
-//	//double dip;
-//	//double strike;
-//	//int polarity;
-//
-//};
-//struct SURFE_LIB_EXPORT TangentPointsLight {
-//	double _tg_points[6];
-//	//double xCoord;
-//	//double yCoord;
-//	//double zCoord;
-//	//double tx;
-//	//double ty;
-//	//double tz;
-//};
-//struct SURFE_LIB_EXPORT EvaluationPointsLight {
-//	double _ev_points[3];
-//	//double xCoord;
-//	//double yCoord;
-//	//double zCoord;
-//};
+
 struct SURFE_LIB_EXPORT InequalityPoints {
-	int n_pts;
-	//InequalityPointsLight inequality[];
-	double inequality[][4];
+	int n_iepts;
+	double *x;
+	double *y;
+	double *z;
+	double *level;
 };
+
 struct SURFE_LIB_EXPORT InterfacePoints {
-	
+
 	int n_pts;
-	//InterfacePointsLight interface[];
-	double interface[][4];
+	double *x;
+	double *y;
+	double *z;
+	double *level;
 };
 struct SURFE_LIB_EXPORT PlanarPoints {
-	
+
 	int n_pts;
-	//PlanarPointsLight planar[];
-	double planar[][6];
+	int *polarity;
+	double *x;
+	double *y;
+	double *z;
+	double *dip;
+	double *strike;
 };
 struct SURFE_LIB_EXPORT TangentPoints {
-	
+
 	int n_pts;
-	//TangentPointsLight tangent[];
-	double tangent[][6];
+	double *x;
+	double *y;
+	double *z;
+	double *tx;
+	double *ty;
+	double *tz;
 };
 struct SURFE_LIB_EXPORT EvaluationPoints {
-	
+
 	int n_pts;
-	//EvaluationPointsLight evaluation[];
-	double evaluation[][3];
+	double *x;
+	double *y;
+	double *z;
 };
 
 
@@ -358,27 +297,28 @@ public:
 		itrface = new std::vector<Interface>;
 		planar = new std::vector<Planar>;
 		tangent = new std::vector<Tangent>;
+
 		evaluation_pts = new std::vector<Evaluation_Point>;
 
 		//Remap incoming structure to related class.
-		if (ie_pts.n_pts > 0)
+		if (ie_pts.n_iepts > 0)
 		{
-			for (int i = 0; i < ie_pts.n_pts; i++)
+			for (int i = 0; i < ie_pts.n_iepts; i++)
 			{
-				Inequality currentIne = Inequality::Inequality(ie_pts.inequality[i][0], ie_pts.inequality[i][1], ie_pts.inequality[i][2], ie_pts.inequality[i][3]);
+				Inequality currentIne = Inequality::Inequality(ie_pts.x[i], ie_pts.y[i], ie_pts.z[i], ie_pts.level[i]);
 
 				inequality->push_back(currentIne);
-				
+
 			}
-			
-			
+
+
 		}
 
 		if (i_pts.n_pts > 0)
 		{
 			for (int i = 0; i < i_pts.n_pts; i++)
 			{
-				Interface currentInter = Interface::Interface(i_pts.interface[i][0], i_pts.interface[i][1], i_pts.interface[i][2], i_pts.interface[i][3]);
+				Interface currentInter = Interface::Interface(i_pts.x[i], i_pts.y[i], i_pts.z[i], i_pts.level[i]);
 
 				itrface->push_back(currentInter);
 			}
@@ -388,7 +328,7 @@ public:
 		{
 			for (int i = 0; i < p_pts.n_pts; i++)
 			{
-				Planar currentPlan = Planar::Planar(p_pts.planar[i][0], p_pts.planar[i][1], p_pts.planar[i][2], p_pts.planar[i][3], p_pts.planar[i][4], (int)p_pts.planar[i][5]);
+				Planar currentPlan = Planar::Planar(p_pts.x[i], p_pts.y[i], p_pts.z[i], p_pts.dip[i], p_pts.strike[i], (int)p_pts.polarity[i]);
 
 				planar->push_back(currentPlan);
 			}
@@ -398,7 +338,7 @@ public:
 		{
 			for (int i = 0; i < t_pts.n_pts; i++)
 			{
-				Tangent currentTan = Tangent::Tangent(t_pts.tangent[i][0], t_pts.tangent[i][1], t_pts.tangent[i][2], t_pts.tangent[i][3], t_pts.tangent[i][4], t_pts.tangent[i][5]);
+				Tangent currentTan = Tangent::Tangent(t_pts.x[i], t_pts.y[i], t_pts.z[i], t_pts.tx[i], t_pts.ty[i], t_pts.tz[i]);
 
 				tangent->push_back(currentTan);
 			}
@@ -408,24 +348,11 @@ public:
 		{
 			for (int i = 0; i < e_pts.n_pts; i++)
 			{
-				Evaluation_Point currentEva = Evaluation_Point::Evaluation_Point(e_pts.evaluation[i][0], e_pts.evaluation[i][1], e_pts.evaluation[i][2]);
+				Evaluation_Point currentEva = Evaluation_Point::Evaluation_Point(e_pts.x[i], e_pts.y[i], e_pts.z[i]);
 
 				evaluation_pts->push_back(currentEva);
 			}
 		}
-
-		using namespace std;
-		freopen("W:\\transit\\Gab\\output.txt", "w", stdout);
-		freopen("W:\\transit\\Gab\\error.txt", "w", stderr);
-
-		cout << "Output message" << endl;
-		cerr << "Error message" << endl;
-
-		//for (int j = 0; j < ie_pts.n_pts; j++) inequality->push_back(ie_pts.inequality[j]);
-		//for (int j = 0; j < i_pts.n_pts; j++) itrface->push_back(i_pts.interface[j]);
-		//for (int j = 0; j < p_pts.n_pts; j++) planar->push_back(p_pts.planar[j]);
-		//for (int j = 0; j < t_pts.n_pts; j++) tangent->push_back(t_pts.tangent[j]);
-		//for (int j = 0; j < e_pts.n_pts; j++) evaluation_pts->push_back(e_pts.evaluation[j]);
 
 		interface_iso_values = new std::vector<double>;
 		interface_point_lists = new std::vector< std::vector < Interface > >;
@@ -436,7 +363,6 @@ public:
 		_avg_nn_dist_p = -99999.0; // no data value
 		_avg_nn_dist_t = -99999.0; // no data value
 	}
-
 	~Basic_input()
 	{
 		delete inequality;
