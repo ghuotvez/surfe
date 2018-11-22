@@ -279,17 +279,17 @@ RBFKernel * GRBF_Modelling_Methods::create_rbf_kernel(const Parameter_Types::RBF
 	}
 }
 
-EvaluationPoints GRBF_Modelling_Methods::get_evaluation_points_c_output()
-{
-	int n = b_input.evaluation_pts->size();
-	EvaluationPoints ep;
-	ep.evaluation = new Evaluation_Point[n];
-	ep.n_pts = n;
-	for (int j = 0; j < b_input.evaluation_pts->size(); j++){
-		ep.evaluation[j] = b_input.evaluation_pts->at(j);
-	}
-	return ep;
-}
+//EvaluationPoints GRBF_Modelling_Methods::get_evaluation_points_c_output()
+//{
+//	int n = b_input.evaluation_pts->size();
+//	EvaluationPoints ep;
+//	ep.evaluation = new EvaluationPointsLight[n];
+//	ep.n_pts = n;
+//	for (int j = 0; j < b_input.evaluation_pts->size(); j++){
+//		ep.evaluation[j] = b_input.evaluation_pts->at(j);
+//	}
+//	return ep;
+//}
 
 bool GRBF_Modelling_Methods::_output_greedy_debug_objects()
 {
@@ -364,3 +364,76 @@ bool GRBF_Modelling_Methods::run_greedy_algorithm()
 
 	return true;
 } 
+
+
+//A sub class to get method algorrithm, will be used inside wrappers
+GRBF_Modelling_Methods* get_algorithm_method(const model_parameters& m_parameters, const Basic_input& input)
+{
+	if (m_parameters.model_type == Parameter_Types::Single_surface) return new Single_Surface(m_parameters, input);
+	else if (m_parameters.model_type == Parameter_Types::Lajaunie_approach) return new Lajaunie_Approach(m_parameters, input);
+	else if (m_parameters.model_type == Parameter_Types::Stratigraphic_horizons) return new Stratigraphic_Surfaces(m_parameters, input);
+	else return new Continuous_Property(m_parameters, input);
+}
+
+//void* Create_GRBF_Instance()
+//{
+//	GRBF_Modelling_Methods* grbf = Sub_GRBF_Modelling_Methods
+//	return grbf;
+//}
+
+//Wrapper to release grbf instance
+void Release_GRBF_Instance(void* grbfInstance)
+{
+	GRBF_Modelling_Methods* grbf = (GRBF_Modelling_Methods*)grbfInstance;
+	delete grbf;
+}
+
+//Wrapper to get a pointer to grbf method
+void* Get_GRBF_Method(void* mpInstance, void* biInstance)
+{
+	
+	//Cast
+	Basic_input* bi = (Basic_input*)biInstance;
+	model_parameters* mp = (model_parameters*)mpInstance;
+
+	//Create new classes
+	Basic_input new_bi;
+	new_bi.inequality = bi->inequality;
+	new_bi.itrface = bi->itrface;
+	new_bi.planar = bi->planar;
+	new_bi.tangent = bi->tangent;
+	new_bi.evaluation_pts = bi->evaluation_pts;
+
+	model_parameters new_mp;
+	new_mp.model_type = mp->model_type;
+	new_mp.min_stratigraphic_thickness = mp->min_stratigraphic_thickness;
+	new_mp.use_interface_data = mp->use_interface_data;
+	new_mp.use_planar_data = mp->use_planar_data;
+	new_mp.use_tangent = mp->use_tangent;
+	new_mp.use_inequality = mp->use_inequality;
+	new_mp.basis_type = mp->basis_type;
+	new_mp.shape_parameter = mp->shape_parameter;
+	new_mp.polynomial_order = mp->polynomial_order;
+	new_mp.advanced_parameters = mp->advanced_parameters;
+	new_mp.model_global_anisotropy = mp->model_global_anisotropy;
+	new_mp.use_greedy = mp->use_greedy;
+	new_mp.use_restricted_range = mp->use_restricted_range;
+	new_mp.interface_uncertainty = mp->interface_uncertainty;
+	new_mp.angular_uncertainty = mp->angular_uncertainty;
+
+	GRBF_Modelling_Methods* t = get_algorithm_method(new_mp, new_bi);
+
+	return t;
+}
+
+
+//A wrapper to run the algorithm from some existing instance of grbf
+bool Run_GRBF(void* grbf_instance)
+{
+	//Cast
+	GRBF_Modelling_Methods* grbf = (GRBF_Modelling_Methods*)grbf_instance;
+
+	//run
+	return grbf->run_algorithm();
+
+}

@@ -103,4 +103,8 @@ struct SURFE_LIB_EXPORT basic_parameters{
 		modified_basis(false), poly_term(true), n_poly_terms(4), problem_type(Parameter_Types::Linear),restricted_range(false){}
 };
 
+//Wrapper functions for external use
+SURFE_LIB_EXPORT void* Create_ModelParameters_Instance();
+SURFE_LIB_EXPORT void Release_ModelParameters_Instance(void* mpInstance);
+
 #endif

@@ -385,12 +385,9 @@ std::vector<int> Get_Interface_STL_Vector_Indices_With_Large_Residuals(const std
 std::vector<int> Get_Planar_STL_Vector_Indices_With_Large_Residuals(const std::vector<Planar> *planar, const double &angular_uncertainty, const double &avg_nn_distance);
 std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals(const std::vector<Tangent> *tangent, const double &angular_uncertainty, const double &avg_nn_distance);
 
-SURFE_LIB_EXPORT void* CreateInstance();
-SURFE_LIB_EXPORT void ReleaseInstance(void* biInstance);
-SURFE_LIB_EXPORT bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep);
+//Wrapper functions for external use
+SURFE_LIB_EXPORT void* Create_BasicInput_Instance();
+SURFE_LIB_EXPORT void Release_BasicInput_Instance(void* biInstance);
+SURFE_LIB_EXPORT bool Set_BasicInput_Data(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep);
 
 #endif
-
-//extern "C" _declspec(dllexport) void* CreateInstance();
-//extern "C" _declspec(dllexport) void ReleaseInstance(void* biInstance);
-//extern "C" _declspec(dllexport) bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep);

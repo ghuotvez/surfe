@@ -95,4 +95,10 @@ public:
 	std::string error_msg;
 };
 
+//Wrappers
+//SURFE_LIB_EXPORT void* Create_GRBF_Instance();
+SURFE_LIB_EXPORT void Release_GRBF_Instance(void* grbfInstance);
+SURFE_LIB_EXPORT void* Get_GRBF_Method(void* mp, void* bi);
+SURFE_LIB_EXPORT bool Run_GRBF(void* grbfInstance);
+
 #endif

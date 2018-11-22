@@ -1048,18 +1048,23 @@ std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals( const std:
 	return tangent_indices_to_include;
 }
 
-void* CreateInstance() {
+//A wrapper that will create a new basic input instance
+void* Create_BasicInput_Instance() {
 
 	Basic_input* bi = new Basic_input();
 	return bi;
 }
-void ReleaseInstance(void* biInstance)
+
+//A wrapper that will release basic input instance
+void Release_BasicInput_Instance(void* biInstance)
 {
 	Basic_input* bi = (Basic_input*)biInstance;
 	delete bi;
 
 }
-bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep)
+
+//A wrapper that will set basic input data
+bool Set_BasicInput_Data(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep)
 {
 	//Cast
 	Basic_input* bi = (Basic_input*)biInstance;
