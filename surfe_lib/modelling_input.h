@@ -6,36 +6,36 @@
 
 #include <vector>
 
-class SURFE_LIB_EXPORT Point{
-	private:
-		double _x;
-		double _y;
-		double _z;
-		double _c;
-		double _scalar_field;
-		double _field_normal[3];
-	public:
-		Point(const double& x_coord, const double& y_coord, const double &z_coord, const double &c_coord = 0)
-			: _x(x_coord), _y(y_coord), _z(z_coord), _c(c_coord)
-		{
-			_scalar_field = NULL;
-			for (int j = 0; j < 3; j++) _field_normal[j] = NULL;
-		}
-		Point() {}
-		double x() const { return _x; }
-		double y() const { return _y; }
-		double z() const { return _z; }
-		double c() const { return _c; }
-		void set_x(const double &x_coord) { _x = x_coord; }
-		void set_y(const double &y_coord) { _y = y_coord; }
-		void set_z(const double &z_coord) { _z = z_coord; }
-		void set_c(const double &c_coord) { _c = c_coord; }
-		double scalar_field() const { return _scalar_field; }
-		void set_scalar_field(const double &scalar_field_value) { _scalar_field = scalar_field_value; }
-		void set_vector_field(const double &nx, const double &ny, const double &nz) { _field_normal[0] = nx; _field_normal[1] = ny; _field_normal[2] = nz; }
-		double nx_interp() const { return _field_normal[0]; }
-		double ny_interp() const { return _field_normal[1]; }
-		double nz_interp() const { return _field_normal[2]; }
+class SURFE_LIB_EXPORT Point {
+private:
+	double _x;
+	double _y;
+	double _z;
+	double _c;
+	double _scalar_field;
+	double _field_normal[3];
+public:
+	Point(const double& x_coord, const double& y_coord, const double &z_coord, const double &c_coord = 0)
+		: _x(x_coord), _y(y_coord), _z(z_coord), _c(c_coord)
+	{
+		_scalar_field = NULL;
+		for (int j = 0; j < 3; j++) _field_normal[j] = NULL;
+	}
+	Point() {}
+	double x() const { return _x; }
+	double y() const { return _y; }
+	double z() const { return _z; }
+	double c() const { return _c; }
+	void set_x(const double &x_coord) { _x = x_coord; }
+	void set_y(const double &y_coord) { _y = y_coord; }
+	void set_z(const double &z_coord) { _z = z_coord; }
+	void set_c(const double &c_coord) { _c = c_coord; }
+	double scalar_field() const { return _scalar_field; }
+	void set_scalar_field(const double &scalar_field_value) { _scalar_field = scalar_field_value; }
+	void set_vector_field(const double &nx, const double &ny, const double &nz) { _field_normal[0] = nx; _field_normal[1] = ny; _field_normal[2] = nz; }
+	double nx_interp() const { return _field_normal[0]; }
+	double ny_interp() const { return _field_normal[1]; }
+	double nz_interp() const { return _field_normal[2]; }
 };
 
 class SURFE_LIB_EXPORT Evaluation_Point : public Point {
@@ -287,11 +287,11 @@ public:
 		_avg_nn_dist_p = -99999.0; // no data value
 		_avg_nn_dist_t = -99999.0; // no data value
 	}
-	void Basic_input_function(InequalityPoints ie_pts,
-		InterfacePoints i_pts,
-		PlanarPoints p_pts,
-		TangentPoints t_pts,
-		EvaluationPoints e_pts)
+	Basic_input(const InequalityPoints &ie_pts,
+		const InterfacePoints &i_pts,
+		const PlanarPoints &p_pts,
+		const TangentPoints &t_pts,
+		const EvaluationPoints &e_pts)
 	{
 		inequality = new std::vector<Inequality>;
 		itrface = new std::vector<Interface>;
@@ -300,59 +300,12 @@ public:
 
 		evaluation_pts = new std::vector<Evaluation_Point>;
 
-		//Remap incoming structure to related class.
-		if (ie_pts.n_iepts > 0)
-		{
-			for (int i = 0; i < ie_pts.n_iepts; i++)
-			{
-				Inequality currentIne = Inequality::Inequality(ie_pts.x[i], ie_pts.y[i], ie_pts.z[i], ie_pts.level[i]);
+		//for (int j = 0; j < ie_pts.n_iepts; j++) inequality->push_back(ie_pts.x[j]);
+		//for (int j = 0; j < i_pts.n_pts; j++) itrface->push_back(i_pts.intface[j]);
+		//for (int j = 0; j < p_pts.n_pts; j++) planar->push_back(p_pts.planar[j]);
+		//for (int j = 0; j < t_pts.n_pts; j++) tangent->push_back(t_pts.tangent[j]);
 
-				inequality->push_back(currentIne);
-
-			}
-
-
-		}
-
-		if (i_pts.n_pts > 0)
-		{
-			for (int i = 0; i < i_pts.n_pts; i++)
-			{
-				Interface currentInter = Interface::Interface(i_pts.x[i], i_pts.y[i], i_pts.z[i], i_pts.level[i]);
-
-				itrface->push_back(currentInter);
-			}
-		}
-
-		if (p_pts.n_pts > 0)
-		{
-			for (int i = 0; i < p_pts.n_pts; i++)
-			{
-				Planar currentPlan = Planar::Planar(p_pts.x[i], p_pts.y[i], p_pts.z[i], p_pts.dip[i], p_pts.strike[i], (int)p_pts.polarity[i]);
-
-				planar->push_back(currentPlan);
-			}
-		}
-
-		if (t_pts.n_pts > 0)
-		{
-			for (int i = 0; i < t_pts.n_pts; i++)
-			{
-				Tangent currentTan = Tangent::Tangent(t_pts.x[i], t_pts.y[i], t_pts.z[i], t_pts.tx[i], t_pts.ty[i], t_pts.tz[i]);
-
-				tangent->push_back(currentTan);
-			}
-		}
-
-		if (e_pts.n_pts > 0)
-		{
-			for (int i = 0; i < e_pts.n_pts; i++)
-			{
-				Evaluation_Point currentEva = Evaluation_Point::Evaluation_Point(e_pts.x[i], e_pts.y[i], e_pts.z[i]);
-
-				evaluation_pts->push_back(currentEva);
-			}
-		}
+		//for (int j = 0; j < e_pts.n_pts; j++) evaluation_pts->push_back(e_pts.evaluation[j]);
 
 		interface_iso_values = new std::vector<double>;
 		interface_point_lists = new std::vector< std::vector < Interface > >;
@@ -432,4 +385,12 @@ std::vector<int> Get_Interface_STL_Vector_Indices_With_Large_Residuals(const std
 std::vector<int> Get_Planar_STL_Vector_Indices_With_Large_Residuals(const std::vector<Planar> *planar, const double &angular_uncertainty, const double &avg_nn_distance);
 std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals(const std::vector<Tangent> *tangent, const double &angular_uncertainty, const double &avg_nn_distance);
 
+SURFE_LIB_EXPORT void* CreateInstance();
+SURFE_LIB_EXPORT void ReleaseInstance(void* biInstance);
+SURFE_LIB_EXPORT bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep);
+
 #endif
+
+//extern "C" _declspec(dllexport) void* CreateInstance();
+//extern "C" _declspec(dllexport) void ReleaseInstance(void* biInstance);
+//extern "C" _declspec(dllexport) bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep);

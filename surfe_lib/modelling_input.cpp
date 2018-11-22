@@ -1047,3 +1047,84 @@ std::vector<int> Get_Tangent_STL_Vector_Indices_With_Large_Residuals( const std:
 
 	return tangent_indices_to_include;
 }
+
+void* CreateInstance() {
+
+	Basic_input* bi = new Basic_input();
+	return bi;
+}
+void ReleaseInstance(void* biInstance)
+{
+	Basic_input* bi = (Basic_input*)biInstance;
+	delete bi;
+
+}
+bool SetData(void* biInstance, InequalityPoints ie, InterfacePoints itf, PlanarPoints pp, TangentPoints tp, EvaluationPoints ep)
+{
+	//Cast
+	Basic_input* bi = (Basic_input*)biInstance;
+
+	//Init
+	bi->inequality = new std::vector<Inequality>;
+	bi->itrface = new std::vector<Interface>;
+	bi->planar = new std::vector<Planar>;
+	bi->tangent = new std::vector<Tangent>;
+	bi->evaluation_pts = new std::vector<Evaluation_Point>;
+
+	//Remap incoming structure to related class.
+	if (ie.n_iepts > 0)
+	{
+		for (int i = 0; i < ie.n_iepts; i++)
+		{
+			Inequality currentIne = Inequality::Inequality(ie.x[i], ie.y[i], ie.z[i], ie.level[i]);
+
+			bi->inequality->push_back(currentIne);
+
+		}
+
+
+	}
+
+	if (itf.n_pts > 0)
+	{
+		for (int i = 0; i < itf.n_pts; i++)
+		{
+			Interface currentInter = Interface::Interface(itf.x[i], itf.y[i], itf.z[i], itf.level[i]);
+
+			bi->itrface->push_back(currentInter);
+		}
+	}
+
+	if (pp.n_pts > 0)
+	{
+		for (int i = 0; i < pp.n_pts; i++)
+		{
+			Planar currentPlan = Planar::Planar(pp.x[i], pp.y[i], pp.z[i], pp.dip[i], pp.strike[i], (int)pp.polarity[i]);
+
+			bi->planar->push_back(currentPlan);
+		}
+	}
+
+	if (tp.n_pts > 0)
+	{
+		for (int i = 0; i < tp.n_pts; i++)
+		{
+			Tangent currentTan = Tangent::Tangent(tp.x[i], tp.y[i], tp.z[i], tp.tx[i], tp.ty[i], tp.tz[i]);
+
+			bi->tangent->push_back(currentTan);
+		}
+	}
+
+	if (ep.n_pts > 0)
+	{
+		for (int i = 0; i < ep.n_pts; i++)
+		{
+			Evaluation_Point currentEva = Evaluation_Point::Evaluation_Point(ep.x[i], ep.y[i], ep.z[i]);
+
+			bi->evaluation_pts->push_back(currentEva);
+		}
+	}
+
+	return bi->check_input_data(); //Validate
+}
+
