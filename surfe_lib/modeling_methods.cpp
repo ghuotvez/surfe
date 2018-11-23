@@ -279,17 +279,26 @@ RBFKernel * GRBF_Modelling_Methods::create_rbf_kernel(const Parameter_Types::RBF
 	}
 }
 
-//EvaluationPoints GRBF_Modelling_Methods::get_evaluation_points_c_output()
-//{
-//	int n = b_input.evaluation_pts->size();
-//	EvaluationPoints ep;
-//	ep.evaluation = new EvaluationPointsLight[n];
-//	ep.n_pts = n;
-//	for (int j = 0; j < b_input.evaluation_pts->size(); j++){
-//		ep.evaluation[j] = b_input.evaluation_pts->at(j);
-//	}
-//	return ep;
-//}
+EvaluationPoints GRBF_Modelling_Methods::get_evaluation_points_c_output(void* grbfInstance)
+{
+	GRBF_Modelling_Methods* grbf = (GRBF_Modelling_Methods*)grbfInstance;
+	Basic_input* binput = &grbf->b_input;
+	int n = binput->evaluation_pts->size();
+	EvaluationPoints ep;
+	ep.x = new double[n];
+	ep.y = new double[n];
+	ep.z = new double[n];
+
+	ep.n_pts = n;
+	for (int j = 0; j < n; j++) {
+		Point currentEvPt = binput->evaluation_pts->at(j);
+
+		ep.x[j] = currentEvPt.x();
+		ep.y[j] = currentEvPt.y();
+		ep.z[j] = currentEvPt.z();
+	}
+	return ep;
+}
 
 bool GRBF_Modelling_Methods::_output_greedy_debug_objects()
 {
@@ -435,5 +444,16 @@ bool Run_GRBF(void* grbf_instance)
 
 	//run
 	return grbf->run_algorithm();
+
+}
+
+//A wrapper to run the algorithm from some existing instance of grbf
+EvaluationPoints Get_Evaluation_Points_Output(void* grbfInstance)
+{
+	//Cast
+	GRBF_Modelling_Methods* grbf = (GRBF_Modelling_Methods*)grbfInstance;
+
+	//run
+	return grbf->get_evaluation_points_c_output(grbf);
 
 }
